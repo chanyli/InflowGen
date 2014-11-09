@@ -1,0 +1,109 @@
+# INITIALIZATION PARAMETERS ########################
+# going to be used by init_flow ###
+! Name
+Simulation      :  DNS box
+
+Domain size : 2.0 #[cm]
+nx : 256
+
+Data type : finite chem
+
+Spectrum form : VKP !PP VKP
+#--- velocity fluctuation, u' [cm/s] ---#
+Fluctuations : 70.0
+
+#--- integral length scale, Li [cm] ---#
+Energetic scale : 0.16
+#FOR VKP spectrum
+#--- dissipative length scale, ld [cm] ---#
+Dissipative scale : 0.08
+#--- energy dissipation, epsilon [cm^2/s^3] ---#
+Dissipation : 1000000.0
+
+# INFLOW FILE WRITING
+####Inflow file to write : inflow_HIT
+
+Turbulence Output : .false.
+###if turbulence
+#--- mean velocity, [cm/s] ---#
+Inflow file U : 100.0
+###if not
+Inflow frequency : 0.001
+Inflow location : 0
+
+#--- thermo. p, [dyne/cm^3] ---#
+BackGround Pressure	: 1.0E6
+#--- temperature, [K] ---#
+Ambient Temperature	: 300.0 
+#--- mass fractions ---#
+Init fuel     : 0.03
+Init oxidizer : 0.00
+#--- kinematic viscosity, [cm^2/s] ---#
+Viscosity : 0.22
+
+! Files
+Init config file    :  	config
+Init data file 	    :	data_Fuel.out
+
+#SYSTEM ############################
+MPIIO fs: lustre  
+
+# RUNNING PARAMETERS ###############################
+
+! Files
+Configuration file  :	config
+Data file to read   :	data.init
+Data file to write  :	data.out
+Data frequency      :   5.0E-3
+Dump serial data file : .false.
+Merge serial data file : .false.
+Data overwrite : .true. !.false.
+
+! Partitioning
+Processors along X :    24
+Processors along Y :    1
+Processors along Z :    1	
+
+! Chemistry - Properties
+Chemistry model : finite chem !none
+Pressure : 1.0e5
+Fuel species : H2
+
+! Subgrid Scale model
+Use SGS model 	:	.false.
+      
+! Time advancement
+Timestep size 	   :	2.0E-5
+CFL number 	   :	0.8	
+Subiterations 	   :	2
+
+! End of simulation
+Maximum iterations :	500
+Maximum time       :	0.01
+Maximum wall time  :	0.6
+
+! Schemes
+Velocity conv scheme :	2  ! 4 6
+Velocity visc scheme :  2  ! 4 6
+Scalar scheme       : bquick
+Implicit directions   :	xyz
+
+! Pressure
+Pressure solver       : bicgstab !GMRES
+Pressure precond      : tridiag !PFMG ! SMG
+Pressure cvg          : 1.0E-7
+Pressure iterations   :	60   ! 8
+Pressure fft : .false.
+Pressure solve walls : .false.
+
+! Output
+Output type           :	plot3D-3D !tecplot-3D !ensight-3D 
+Output frequency      : 1.0E-3
+Output variables      : !VISC    
+
+! Statistics
+Statistics type : !1D-x
+Statistics locations y : 0
+Statistics frequency : 0.0 !1.0E-3
+
+Number of Holes : 0
